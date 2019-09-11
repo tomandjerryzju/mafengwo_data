@@ -7,18 +7,30 @@ Created on Sat Jun  2 16:46:19 2018
 
 import os  
 from urllib.request import  urlopen  
-from urllib  import request  
+from urllib  import request
+import requests
 from bs4 import BeautifulSoup    
 import pandas as pd
 from pyecharts import Bar,Geo 
 
-os.chdir('D:/爬虫/蚂蜂窝')
+# os.chdir('D:/爬虫/蚂蜂窝')
+
+proxies = {
+    "http": "http://ipsdispatcher-travel.vip.sankuai.com:8411",
+    "https": "http://ipsdispatcher-travel.vip.sankuai.com:8411"
+}
 
 ## 获得城市url内容
 def get_static_url_content(url):
+    s = requests.session()
+    s.keep_alive = False
     headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:23.0) Gecko/20100101 Firefox/23.0'}      
-    req=request.Request(url,headers=headers)  
-    html=urlopen(req)  
+    # req=request.Request(url, headers=headers)
+    html = s.get(url, verify=False, timeout=10.0, headers={'Connection': 'close'}, proxies=proxies)
+    # try:
+    #     html=urlopen(req)
+    # except Exception as e:
+    #     print(e)
     bsObj=BeautifulSoup(html.read(),"html.parser")
     return bsObj
 
